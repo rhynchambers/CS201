@@ -72,5 +72,7 @@ large_gentoos <- penguins %>%
 ```
 
 ```{r}
-min(large_gentoos$body_mass_g, na.rm = TRUE)
+min(large_gentoos$body_mass_g, na.rm =  TRUE)
 ```
+
+#### Select
