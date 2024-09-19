@@ -453,8 +453,340 @@ gentoo_adelie_penguins_data_joined <- full_join(gentoo_penguins_data_from_uri, a
 #### Final Exercises {style="color: #B8860B;"}
 
 1.  Create a boxplot of body mass by species & make the plot interactive
+
     1.  Hint: geom_boxplot(), ggplotly()
 
-1.  How many penguins live on Torgersen Island?
-2.  Create a dataframe that has the average culmen depth for each species
+        ```{r}
+        box_plot <- ggplot(penguins_data_from_csv, aes(x = species, y = body_mass_g, fill = species)) +
+          geom_boxplot() +
+          theme_box() + 
+          labs(title = "Penguin body mass by species",
+               x = "Species",
+               y = "Body mass (g)")
+               cocord_flip() +
+                 theme(legend.position = "None")
+               
+          
+        ```
+
+        ```{r}
+        ggploty(boxplot)
+        ```
+
+2.  How many penguins live on Torgersen Island?
+
+    ```{r}
+    penguins_data_from_csv %>%
+      filter(island == "torgenson") %>%
+      count(island)
+    ```
+
+3.  Create a dataframe that has the average culmen depth for each species
+
     1.  Make a bar plot of the new dataframe with species on the x axis and average culmen depth on the y axis
+
+        ```{r}
+        average_species_culman_depth <- penguins_data_from_csv %>%
+          group_by(species) %>%
+          summarise(average_culman_depth = mean(culman_depth_mm, na.rm = TRUE))
+        ```
+
+        ```{r}
+        ggplot(data = average_species_culman_depth, aes(x = species, y = average_culman_depth, fill = species)) +
+          geom_bar(stat + "identity") +
+          theme_bw() +
+          scale_fill_viridis_d() +
+          coord_flip() +
+          theme(legend.position = "none") +
+          labs(title + "Average penguin culman depth by species",
+               y = "average culman depth (mm)",
+               x = "species"
+          )
+        ```
+
+        ####  1. filter
+
+        ##### Activity 1
+
+```{r}
+penguins %>%
+  filter(species == "gentoo", bill_depth_mm > 15.5)
+```
+
+##### Activity 2
+
+```{r}
+penguins %>%
+  filter(island %in% c("Dream","Biscoe"),
+         sex == "male")
+```
+
+##### Activity 3
+
+```{r}
+penguins %>%
+  filter(sex == "female",
+         species == "Adelie",
+         bill_length_mm < 35)
+```
+
+##### Activity 4
+
+```{r}
+penguins %>%
+  filter(sex == "female",
+         species == "chinstrap") %>%
+  filter(island %in% c("Dream","Torgersen"))
+```
+
+##### Activity 5
+
+```{r}
+penguins %>%
+  filter(species == "Gentoo" | body_mass_g > 4500)
+```
+
+#### Select()
+
+##### Activity 1
+
+```{r}
+penguins %>%
+  select(body_mass_g)
+```
+
+##### Activity 2
+
+```{r}
+penguins %>%
+  select(bill_length_mm:body_mass_g, year)
+```
+
+##### Activity 3
+
+```{r}
+penguins %>%
+  select(-island)
+```
+
+##### Activity 4
+
+```{r}
+penguins %>%
+  select(!c(species, sex, year))
+```
+
+##### Activity 5
+
+```{r}
+penguins %>%
+  select(species, ends_with("mm"))
+```
+
+##### Activity 6
+
+```{r}
+penguins %>%
+  select(contains("bill") | ends_with("mm"))
+```
+
+##### Activity 7
+
+```{r}
+penguins %>%
+  filter(sex == "female", island == "Dream") %>%
+  select(species, starts_with("bill"))
+```
+
+#### Relocate()
+
+##### Activity 1
+
+```{r}
+penguins %>%
+  relocate(species, .before = sex)
+```
+
+##### Activity 2
+
+```{r}
+penguins %>%
+relocate(bill_length_mm)
+
+
+```
+
+##### Activity 3
+
+```{r}
+penguins %>%
+  relocate(where(is.factor), .after = where(is.integer))
+```
+
+#### Rename()
+
+##### Activity 1
+
+```{r}
+penguins %>%
+  rename(flipper_mm = flipper_length_mm)
+```
+
+##### Activity 2
+
+```{r}
+penguins %>%
+  rename(island_name = island,
+         penguin_spp = species)
+```
+
+##### Activity 3
+
+```{r}
+penguins %>%
+  rename_with(toupper, starts_with("bill"))
+```
+
+#### Mutate 
+
+##### Activity 1
+
+```{r}
+penguins %>%
+  mutate(flipper_m = flipper_length_mm / 1000)
+```
+
+##### Activity 2
+
+```{r}
+penguins %>%
+  mutate(year_fct = as.factor(year))
+```
+
+##### Activity 3
+
+```{r}
+penguins %>%
+  mutate(mass_lb = body_mass_g * 0.0022)
+```
+
+##### Activity 4
+
+```{r}
+penguins %>%
+  mutate(species = as.character(species),
+         flipper_cm = flipper_length_mm / 10,
+         island = tolower(island))
+```
+
+#### Group_By
+
+##### Activity 1
+
+```{r}
+penguins %>%
+  filter(species == "Chinstrap") %>%
+  group_by(island) %>%
+  summarize(flip_max = max(flipper_length_mm),
+            flip_min = min(flipper_length_mm))
+```
+
+##### Activity 2
+
+```{r}
+penguins %>%
+  group_by(species, year) %>%
+  summarize(
+    bill_depth_mean = mean(bill_depth_mm, na.rm = TRUE),
+    bill_length_mean = mean(bill_length_mm, na.rm = TRUE)
+  )
+```
+
+##### Activity 3
+
+```{r}
+penguins %>%
+  mutate(bill_ratio = bill_length_mm / bill_depth_mm) %>%
+  select(species, bill_ratio) %>%
+  group_by(species) %>%
+  summarize(bill_ratio_mean = mean(bill_ratio, na.rm = TRUE))
+```
+
+#### Across
+
+##### Activity 1
+
+```{r}
+penguins %>%
+  group_by(species) %>%
+  summarize(across(contains("mm"),
+                   median,
+                   na.rm = TRUE,
+                   .names = "{.col}_median")
+            )
+```
+
+##### Activity 2
+
+```{r}
+penguins %>%
+  filter(species == "Adelie") %>%
+  group_by(island) %>%
+  summarize(across(where(is.numeric), max, na.rm = TRUE))
+```
+
+##### Activity 3
+
+```{r}
+penguins %>%
+  filter(island != "Biscoe") %>%
+  select(species:body_mass_g) %>%
+  rename(spp_penguin = species) %>%
+  group_by(spp_penguin) %>%
+  summarize(across(contains("length"), mean, na.rm = TRUE, .names = "{.col}_avg"))
+```
+
+#### Count
+
+##### Activity 1
+
+```{r}
+penguins %>%
+  count(species, island, year)
+```
+
+##### Activity 2
+
+```{r}
+penguins %>%
+  filter(species %in% c("Adelie","Gentoo")) %>%
+  count(species, sex)
+```
+
+#### Case_when
+
+##### Activity 1
+
+```{r}
+penguins %>%
+  mutate(study_year =
+           case_when(
+             year == 2007 ~ "Year 1",
+             year == 2008 ~ "Year 2",
+             year == 2009 ~ "Year 3"
+           ))
+```
+
+##### Activity 2
+
+```{r}
+penguins %>%
+  filter(species == "Chinstrap") %>%
+  select(flipper_length_mm, body_mass_g) %>%
+  mutate(fm_ratio = flipper_length_mm / body_mass_g) %>%
+  mutate(ratio_bin = case_when(
+    fm_ratio >= 0.05 ~ "high",
+    fm_ratio < 0.05 ~ "low",
+    TRUE ~ "no record"
+  ))
+```
