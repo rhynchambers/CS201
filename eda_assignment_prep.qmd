@@ -1,0 +1,116 @@
+---
+title: "EDA Assignment Prep"
+author: "Amber Camp"
+format: html
+editor: visual
+---
+
+## EDA Assignment Prep: Pokemon data
+
+### Libraries
+
+```{r}
+library(here)
+library(tidyverse)
+library(janitor)
+```
+
+### Data
+
+```{r}
+pokedata <- read_csv(here("data/Pokemon.csv"))
+
+pokedata <- pokedata %>%
+  clean_names()
+```
+
+### Describe the data:
+
+Data author:
+
+Description:
+
+How many observations (rows) are there?
+
+How many variables (columns) are there?
+
+### skimr: Quick overview
+
+```{r}
+skim_data <- skimr::skim(pokedata)
+```
+
+### Summary: Quick overview
+
+```{r}
+summary(pokedata)
+```
+
+### Categorical vs. Continuous
+
+```{r}
+class(pokedata$number) #checks class
+pokedata$number <- as.factor(pokedata$number) #converts to factor
+class(pokedata$number)
+summary(pokedata$number)
+
+summary(pokedata$type_1)
+pokedata$type_1 <- as.factor(pokedata$type_1)
+class(pokedata$type_1)
+summary(pokedata$type_1)
+
+summary(pokedata$generation)
+
+```
+
+How many categorical variables are there? 5 maybe 6
+
+How many continuous variables are there? 7
+
+What are some variables of interest to you?
+
+------------------------------------------------------------------------
+
+## EDA Assignment Prep: \[Insert Data Name Here\]
+
+### Libraries
+
+```{r}
+library(here)
+library(tidyverse)
+library(janitor)
+```
+
+### Data
+
+```{r}
+
+```
+
+### Describe the data:
+
+Data author:
+
+Description:
+
+How many observations (rows) are there?
+
+How many variables (columns) are there?
+
+### Summary: Quick overview
+
+```{r}
+
+```
+
+### Categorical vs. Continuous
+
+```{r}
+
+```
+
+How many categorical variables are there?
+
+How many continuous variables are there?
+
+What are some variables of interest to you?

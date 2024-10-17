@@ -9,6 +9,7 @@ editor: visual
 ```{r}
 library(tidyverse)
 library(plotly)
+library(ggpubr)
 ```
 
 #### Read in Dataset
@@ -26,6 +27,7 @@ Lets examine the relationship between weight and miles per gallon
 ```{r}
 cars_wt_mpg <- ggplot(data = mtcars, aes(x = mpg, y = wt)) +
   geom_point()
+geom_smooth()
 cars_wt_mpg
 ```
 
@@ -40,10 +42,36 @@ mtcars <- mtcars %>%
 
 ```{r}
 cars_wt_mpg <- ggplot(data = mtcars, aes(x = mpg, y = wt, label = model, color = hp)) +
-  geom_point()
+  geom_point() +
+geom_smooth() +
+  stat_cor()
 cars_wt_mpg
 ```
 
 ```{r}
 ggplotly(cars_wt_mpg)
+```
+
+```{r}
+mtcars_split <- mtcars %>%
+  separate(model, into = c("make", "model"), sep = " ", extra = "merge")
+```
+
+#### Challenge
+
+what is the average mpg for each car manufacturer.
+
+Please Plot the results
+
+```{r}
+average_manufacturer_mpg <- mtcars_split %>%
+  group_by(make) %>%
+  summarise(avg_mpg = mean(mpg), na.rm = TRUE)
+```
+
+```{r}
+ggplot(data = average_manufacturer_mpg, aes(y = reorder(make,avg_mpg), x = avg_mpg)) + 
+  geom_bar(stat = "identity")
+
+  
 ```
