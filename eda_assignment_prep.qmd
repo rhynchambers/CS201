@@ -65,52 +65,65 @@ summary(pokedata$generation)
 
 How many categorical variables are there? 5 maybe 6
 
-How many continuous variables are there? 7
+How many numeric variables are there? 7
 
 What are some variables of interest to you?
 
 ------------------------------------------------------------------------
 
-## EDA Assignment Prep: \[Insert Data Name Here\]
+## EDA Assignment Prep: \[KBO Pitching data from 1982-2021\]
 
-### Libraries
-
-```{r}
-library(here)
-library(tidyverse)
-library(janitor)
-```
+### 
 
 ### Data
 
 ```{r}
+kbodata <- read_csv(here("data/kbopitchingdata.csv"))
 
+kbodata <- kbodata %>%
+  clean_names()
 ```
 
 ### Describe the data:
 
-Data author:
+Data author: Matt OP
 
-Description:
+Description: Korean Baseball Pitching data from 1982-2021
 
-How many observations (rows) are there?
+How many observations (rows) are there? 323 rows
 
-How many variables (columns) are there?
+How many variables (columns) are there? 34 columns
 
 ### Summary: Quick overview
 
 ```{r}
-
+summary(kbodata)
 ```
 
 ### Categorical vs. Continuous
 
 ```{r}
+class(kbodata$wins) #checks class
+kbodata$wins <- as.factor(kbodata$wins) #converts to factor
+class(kbodata$wins)
+summary(kbodata$wins)
 
+summary(kbodata$era)
+kbodata$era <- as.factor(kbodata$era)
+class(kbodata$era)
+summary(kbodata$era)
+
+summary(kbodata$games)
 ```
 
-How many categorical variables are there?
+How many categorical variables are there? 1
 
-How many continuous variables are there?
+```{r}
+summary(kbodata$wins)
+```
 
-What are some variables of interest to you?
+How many continuous variables are there? 33
+
+What are some variables of interest to you? some variables that interest me are WHIP, ERA, Strikeouts_9, Walks_9
+
+What kinds of questions could you explore with this data? You can rank certain teams on their pitching data and find out valuable things about facing the teams pitchers.
