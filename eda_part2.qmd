@@ -238,3 +238,20 @@ diamonds %>%
 
 
 ```
+
+```{r}
+kbodata <- read_csv(here("data/kbopitchingdata.csv"))
+
+kbodata <- kbodata %>%
+  clean_names()
+```
+
+```{r}
+kbodata <- kbodata
+view(kbodata)
+```
+
+```{r}
+ggplot(kbodata, aes(x = year, y = era)) +
+  geom_histogram(binwidth = .05)
+```
