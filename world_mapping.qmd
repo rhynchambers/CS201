@@ -23,6 +23,7 @@ library(tidyverse)
 library(rnaturalearth)
 library(rnaturalearthdata)
 library(scales)
+library(plotly)
 options(scipen = 99)
 ```
 
@@ -81,3 +82,13 @@ ggplotly(world_pop_map_binned)
 ### Challenge
 
 Can you make a binned color map showing gdp by country?
+
+```{r}
+ggplot(world, aes(fill = gdp_md)) +
+  goem_sf()
+```
+
+```{r}
+world <- world %>%
+  mutate
+```

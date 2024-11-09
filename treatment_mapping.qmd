@@ -1,6 +1,6 @@
 ---
 title: "Treatment Mapping"
-format: html
+format: pdf
 editor: visual
 ---
 
@@ -159,6 +159,8 @@ states_map <- get_urbn_map(map = "states", sf = TRUE)
 
 What do we notice that's different between the teds-d stfips column and the states_map stfips column?
 
+stfips columns under 10 have 1 character as opposed to 2 ex. "01"
+
 ```{r}
 percent_completed_by_state$stfips_recode <- sprintf('%02d', percent_completed_by_state$stfips)
 ```
@@ -196,7 +198,7 @@ interactive_completed_treatment_map <- ggplot(percent_completed_by_state_map) +
     mapping = aes(
       geometry = geometry,
       fill = percentage_completed,
-      tooltip = paste("State FIPS:", stfips, "<br>Completed:", percentage_completed, "%")
+      tooltip = paste("State FIPS:", stfips, "<br>Completed:", percentage_completed, "%", "<br>State:", state_name)
     ),
     color = "#ffffff",
     size = 0.25
@@ -206,7 +208,7 @@ interactive_completed_treatment_map <- ggplot(percent_completed_by_state_map) +
   theme_minimal()
 
 # Use `girafe` to render the interactive plot
-girafe(ggobj = interactive_completed_treatment_map)
+#girafe(ggobj = interactive_completed_treatment_map)
 
 ```
 
@@ -241,5 +243,65 @@ ggplot(percent_completed_by_state_map) +
 
 ### Assignment
 
-1.  Make an interactive map with `ggiraph` showing the percentage of completed treatments that end with no use at discharge
+1.  Make an interactive map with `ggiraph` showing the percentage of completed treatments that end with no use at discharge: (freq1_d)
 2.  How does the percentage of treatments being completed & percentage of treatments ending with no use vary by the service and length of stay. Create at least 3 visualizations to try and answer this question
+
+```{r}
+unique(teds_d_select$services_d)
+```
+
+```{r}
+percent_no_use_discharge <- teds_d_select %>%
+  group_by(stfips) %>%
+  summarize(
+    total_cases = n(),
+    completed_cases = sum(reason == "completed", na.rm = TRUE),
+    completed_no_use_discharge = sum(freq1_d == "no use" & reason == "completed", na.rm = TRUE)
+  ) %>%
+  mutate(percentage_no_use = (completed_no_use_discharge / completed_cases) * 100)
+```
+
+```{r}
+states_map <- get_urbn_map(map = "states", sf = TRUE)
+```
+
+```{r}
+percent_no_use_discharge$stfips_recode <- sprintf('%02d', percent_no_use_discharge$stfips)
+```
+
+```{r}
+colnames(percent_no_use_discharge)[colnames(percent_no_use_discharge) == "stfips_recode"] <- "state_fips"
+```
+
+```{r}
+percent_no_use_discharge_map <- full_join(percent_no_use_discharge,
+                          states_map,
+                          by = "state_fips")
+```
+
+```{r}
+interactive_no_use_discharge_map <- ggplot(percent_no_use_discharge_map) +
+  geom_sf_interactive(
+    mapping = aes(
+      geometry = geometry,
+      fill = percentage_no_use,
+      tooltip = paste("State FIPS:", stfips, "<br>Completed with no use:", round(percentage_no_use, 2), "%", "<br>State:", state_name)
+    ),
+    color = "#ffffff",
+    size = 0.1
+  ) +
+  labs(fill = "% of Completed Treatment Resulting in No Use",
+       title = "Completed Treatment Episodes Resulting in No Use by State",
+       subtitle = "TEDS-D Dataset (SAMHSA)") +
+  coord_sf(datum = NA) +
+  theme_minimal() +
+  theme(
+    panel.background = element_blank(),
+    legend.text = element_text(size = 4),
+    legend.title = element_text(size = 5)
+  ) 
+
+interactive_no_use_discharge_map
+# Use `girafe` to render the interactive plot
+#girafe(ggobj = interactive_no_use_discharge_map)
+```
