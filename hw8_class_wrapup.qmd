@@ -66,21 +66,34 @@ view(assigned_topics)
 
 ```{r, message=FALSE}
 library(janitor)
+library(ggplot2)
 
 ```
 
 #### Read in penguins data
 
 ```{r, message=FALSE}
-penguins <- read_csv(here("data/penguins_lter.csv"))
+penguins_data_from_csv <- read_csv(here("data/penguins_lter.csv"))
 
 penguins <- penguins %>% 
   clean_names()
 ```
 
-#### {Insert topic here}
+#### {Violin plot}
 
-```{r, message=FALSE}
-# insert code snippet here
+#### You use a violin plot when you want to visualize the distribution of a continuous variable across different categories that will show the density which is where the most common one is.
 
+```{r}
+ggplot(penguins_data, aes(x = species, y = flipper_length_mm)) + 
+  geom_violin()
+
+```
+
+#### {Box Plot}
+
+#### A box plot will show you the central tendency(median), the spread(IQR), the outliers, skewness, and the range.
+
+```{r}
+ggplot(penguins_data, aes(x = flipper_length_mm, y = species)) +
+  geom_boxplot()
 ```
